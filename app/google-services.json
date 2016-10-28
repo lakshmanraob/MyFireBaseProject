@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "364929843096",
+    "firebase_url": "https://fbauthentication-9b3a2.firebaseio.com",
+    "project_id": "fbauthentication-9b3a2",
+    "storage_bucket": "fbauthentication-9b3a2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:364929843096:android:73e3d911c04fd57f",
+        "android_client_info": {
+          "package_name": "com.fbauth.checAuth"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "364929843096-nfc0u0jmuk7k3eu1hf6co4r3t753c9pr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fbauth.checAuth",
+            "certificate_hash": "1B21E93ECF7DFC66F121CE7C90D37C0A743C992B"
+          }
+        },
+        {
+          "client_id": "364929843096-u1artgjvb845ni5a3pquh2euv2ld28ua.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPjtYSivTfIVEti8nZxcqAH-ykwWWzps0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "364929843096-u1artgjvb845ni5a3pquh2euv2ld28ua.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -18,10 +18,13 @@ import android.widget.Toast;
 
 import com.fbauth.checAuth.AuthenticationActivity;
 import com.fbauth.checAuth.R;
+import com.fbauth.checAuth.models.UserProfile;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * Created by labattula on 24/10/16.
@@ -33,6 +36,9 @@ public class SignupFragment extends BaseFragment {
     private final String TAG = SignupFragment.class.getSimpleName();
 
     private FirebaseAuth auth;
+
+    private DatabaseReference mDatabase;
+    private FirebaseDatabase mFireBaseDatabase;
 
     public SignupFragment() {
         // Required empty public constructor
@@ -54,6 +60,8 @@ public class SignupFragment extends BaseFragment {
         mSignupViews = new SignUpViews(view);
 
         auth = FirebaseAuth.getInstance();
+        mFireBaseDatabase = FirebaseDatabase.getInstance();
+
 
         //signup
         mSignupViews.mSignUpBtn.setOnClickListener(new View.OnClickListener() {
@@ -105,6 +113,10 @@ public class SignupFragment extends BaseFragment {
         if (!checkPassword()) {
             return;
         }
+        if(!checkPhone()){
+            return;
+        }
+
         mSignupViews.emailLayout.setErrorEnabled(false);
         mSignupViews.passLayout.setErrorEnabled(false);
 
@@ -121,16 +133,30 @@ public class SignupFragment extends BaseFragment {
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Log.d(TAG, "Authentication failed." + task.getException());
-
                         } else {
                             Toast.makeText(getActivity(), "You are successfully Registered !!", Toast.LENGTH_SHORT).show();
-                            //startActivity(new Intent(getActivity(), StartActivity.class));
-                            //getActivity().finish();
+
+                            createProfile(task.getResult());
+
                             ((AuthenticationActivity) getActivity()).launchFragment(AuthFragment.getInstance(), "authFragment");
                         }
                     }
                 });
+    }
 
+    /**
+     * Creates the profile with the authResult
+     * @param authResult
+     */
+    private void createProfile(AuthResult authResult){
+        String phone = mSignupViews.signupPhone.getText().toString().trim();
+        UserProfile userProfile = new UserProfile();
+        userProfile.setUserEmail(authResult.getUser().getEmail());
+        userProfile.setPhoneNumber(phone);
+        userProfile.setUserName(authResult.getUser().getEmail());
+
+        mDatabase = mFireBaseDatabase.getReference(authResult.getUser().getUid());
+        mDatabase.child("user").child("profile").setValue(userProfile);
     }
 
     private void launchLogin() {
@@ -165,12 +191,31 @@ public class SignupFragment extends BaseFragment {
         return true;
     }
 
+    private boolean checkPhone() {
+
+        String phone = mSignupViews.signupPhone.getText().toString().trim();
+        if (phone.isEmpty() || !isPhoneValid(phone)) {
+
+            mSignupViews.phoneLayout.setError(getString(R.string.err_msg_password));
+            mSignupViews.signupPhone.setError(getString(R.string.err_msg_required));
+            requestFocus(mSignupViews.signupPhone);
+            return false;
+        }
+        mSignupViews.phoneLayout.setErrorEnabled(false);
+        return true;
+    }
+
+
     private static boolean isEmailValid(String email) {
         return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     private static boolean isPasswordValid(String password) {
         return (password.length() >= 6);
+    }
+
+    private static boolean isPhoneValid(String phone) {
+        return (phone.length() >= 6);
     }
 
     private void requestFocus(View view) {
@@ -182,10 +227,12 @@ public class SignupFragment extends BaseFragment {
     static class SignUpViews {
         final TextInputLayout emailLayout;
         final TextInputLayout passLayout;
+        final TextInputLayout phoneLayout;
         final ProgressBar mProgressBar;
 
         final EditText signupEmail;
         final EditText signupPass;
+        final EditText signupPhone;
 
         final Button mSignUpBtn;
         final Button mLoginBtn;
@@ -193,9 +240,11 @@ public class SignupFragment extends BaseFragment {
         public SignUpViews(View view) {
             emailLayout = (TextInputLayout) view.findViewById(R.id.signup_input_layout_email);
             passLayout = (TextInputLayout) view.findViewById(R.id.signup_input_layout_password);
+            phoneLayout = (TextInputLayout) view.findViewById(R.id.signup_input_layout_phone);
 
             signupEmail = (EditText) view.findViewById(R.id.signup_input_email);
             signupPass = (EditText) view.findViewById(R.id.signup_input_password);
+            signupPhone = (EditText) view.findViewById(R.id.signup_input_phone);
 
             mSignUpBtn = (Button) view.findViewById(R.id.btn_signup);
             mLoginBtn = (Button) view.findViewById(R.id.btn_link_login);

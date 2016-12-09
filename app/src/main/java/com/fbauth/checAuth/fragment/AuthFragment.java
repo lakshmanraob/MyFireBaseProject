@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +13,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fbauth.checAuth.R;
+import com.fbauth.checAuth.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * Created by labattula on 24/10/16.
@@ -25,6 +32,9 @@ public class AuthFragment extends BaseFragment {
 
     FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener stateListener;
+
+    private FirebaseDatabase mFireDatabaseInstance;
+    private DatabaseReference mDatabaseReference;
 
     public AuthFragment() {
 
@@ -55,6 +65,8 @@ public class AuthFragment extends BaseFragment {
                     getActivity().finish();
                 } else {
                     views.loggedUserView.setText("Hi.." + user.getEmail() + "");
+                    getActivity().setTitle("Hi.." + user.getEmail() + "");
+                    getProfileDetails(user);
                 }
             }
         };
@@ -65,6 +77,35 @@ public class AuthFragment extends BaseFragment {
                 signOut();
             }
         });
+    }
+
+    private void getProfileDetails(FirebaseUser user) {
+        mFireDatabaseInstance = FirebaseDatabase.getInstance();
+        mDatabaseReference = mFireDatabaseInstance.getReference(user.getUid());
+
+        mDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                /**
+                 * mDatabase = mFireBaseDatabase.getReference(authResult.getUser().getUid());
+                 mDatabase.child(Constants.DB_USER).child(Constants.DB_PROFILE).setValue(profile);
+                 */
+
+                String key = dataSnapshot.getKey();
+                User connectedUser = dataSnapshot.getValue(User.class);
+
+                Toast.makeText(getActivity(), connectedUser.getProfile().getPhoneNumber(), Toast.LENGTH_SHORT).show();
+
+                Log.i("check", "onDataChange: ");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     @Override

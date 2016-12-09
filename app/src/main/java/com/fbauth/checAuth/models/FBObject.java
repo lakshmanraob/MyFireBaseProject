@@ -5,4 +5,5 @@ package com.fbauth.checAuth.models;
  */
 
 public class FBObject {
+
 }

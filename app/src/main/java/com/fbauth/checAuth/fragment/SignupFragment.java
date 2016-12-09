@@ -18,7 +18,9 @@ import android.widget.Toast;
 
 import com.fbauth.checAuth.AuthenticationActivity;
 import com.fbauth.checAuth.R;
-import com.fbauth.checAuth.models.UserProfile;
+import com.fbauth.checAuth.models.Profile;
+import com.fbauth.checAuth.models.User;
+import com.fbauth.checAuth.utils.Constants;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -113,7 +115,7 @@ public class SignupFragment extends BaseFragment {
         if (!checkPassword()) {
             return;
         }
-        if(!checkPhone()){
+        if (!checkPhone()) {
             return;
         }
 
@@ -146,17 +148,21 @@ public class SignupFragment extends BaseFragment {
 
     /**
      * Creates the profile with the authResult
+     *
      * @param authResult
      */
-    private void createProfile(AuthResult authResult){
+    private void createProfile(AuthResult authResult) {
         String phone = mSignupViews.signupPhone.getText().toString().trim();
-        UserProfile userProfile = new UserProfile();
-        userProfile.setUserEmail(authResult.getUser().getEmail());
-        userProfile.setPhoneNumber(phone);
-        userProfile.setUserName(authResult.getUser().getEmail());
+        Profile profile = new Profile();
+        profile.setUserEmail(authResult.getUser().getEmail());
+        profile.setPhoneNumber(phone);
+        profile.setUserName(authResult.getUser().getEmail());
+        profile.setUserUDID(authResult.getUser().getUid());
+        User user = new User();
+        user.setProfile(profile);
 
         mDatabase = mFireBaseDatabase.getReference(authResult.getUser().getUid());
-        mDatabase.child("user").child("profile").setValue(userProfile);
+        mDatabase.setValue(user);
     }
 
     private void launchLogin() {

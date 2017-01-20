@@ -11,17 +11,35 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <TextView
-        android:id="@+id/hi_user"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/profileLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/signOutBtn"
-        android:layout_width="wrap_content"
+
+        <TextView
+            android:id="@+id/hi_user"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="7"
+            android:text="Hello World!" />
+
+        <Button
+            android:id="@+id/signOutBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:text="@string/btn_sign_out"
+            tools:text="SignOut" />
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/sampleList"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="@string/btn_sign_out"
-        tools:text="SignOut" />
+        android:layout_below="@id/profileLayout"
+        android:scrollbars="vertical">
+
+    </android.support.v7.widget.RecyclerView>
 </RelativeLayout>

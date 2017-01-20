@@ -1,5 +1,7 @@
 package com.fbauth.checAuth;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
+import com.fbauth.checAuth.fragment.AuthFragment;
 import com.fbauth.checAuth.fragment.BaseFragment;
 import com.fbauth.checAuth.fragment.SignupFragment;
 
@@ -28,14 +31,25 @@ public class AuthenticationActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        signUpPage();
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        signUpPage();
     }
 
     private void signUpPage() {
-        BaseFragment signUpFragment = SignupFragment.newInstance();
-        launchFragment(signUpFragment, "signUp");
-
+        SharedPreferences sharedPreferences = getSharedPreferences("FBAccount", Context.MODE_PRIVATE);
+        boolean isLoggedIn = sharedPreferences.getBoolean("loggedIn", false);
+        if (isLoggedIn) {
+            BaseFragment authFragment = AuthFragment.getInstance();
+            launchFragment(authFragment, "authFragment");
+        } else {
+            BaseFragment signUpFragment = SignupFragment.newInstance();
+            launchFragment(signUpFragment, "signUp");
+        }
     }
 
     /**

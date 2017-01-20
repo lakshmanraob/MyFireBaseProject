@@ -2,6 +2,7 @@ package com.fbauth.checAuth.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,7 +21,7 @@ import com.fbauth.checAuth.R;
 import com.fbauth.checAuth.activities.SampleDetailsActivity;
 import com.fbauth.checAuth.adapters.SampleRecyclerAdapter;
 import com.fbauth.checAuth.models.SampleModel;
-import com.fbauth.checAuth.models.SampleModelDetails;
+import com.fbauth.checAuth.models.SampleModelList;
 import com.fbauth.checAuth.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -48,18 +49,28 @@ public class AuthFragment extends BaseFragment {
 
     ArrayList<SampleModel> sampleModelArrayList = null;
 
+    SharedPreferences sharedPreferences = null;
+
     public AuthFragment() {
-        fillSampleList();
+        //fillSampleList();
     }
 
-    private void fillSampleList() {
-        sampleModelArrayList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            SampleModel model = new SampleModel();
-            model.setModelString("sampleMode.." + i);
-            sampleModelArrayList.add(model);
-        }
-    }
+//    /**
+//     * Enable only when we required data in the FB database
+//     */
+//    private void fillSampleList() {
+//        mFireDatabaseInstance = FirebaseDatabase.getInstance();
+//        mDatabaseReference = mFireDatabaseInstance.getReference("sampleList");
+//        sampleModelArrayList = new ArrayList<>();
+//        for (int i = 0; i < 10; i++) {
+//            SampleModel model = new SampleModel();
+//            model.setModelString("FB sampleMode.." + i);
+//            model.setModelImage("FB sampleModeImage.." + i);
+//            sampleModelArrayList.add(model);
+//        }
+//        mDatabaseReference.setValue(sampleModelArrayList);
+//
+//    }
 
     public static AuthFragment getInstance() {
         return new AuthFragment();
@@ -68,6 +79,7 @@ public class AuthFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        sharedPreferences = getActivity().getSharedPreferences("FBAccount", Context.MODE_PRIVATE);
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
@@ -85,9 +97,13 @@ public class AuthFragment extends BaseFragment {
                     showToast("Sorry we are unable to get the info of yours");
                     getActivity().finish();
                 } else {
-                    views.loggedUserView.setText("Hi.." + user.getEmail() + "");
-                    getActivity().setTitle("Hi.." + user.getEmail() + "");
-                    getProfileDetails(user);
+                    if (getActivity() != null) {
+                        views.loggedUserView.setText("Hi.." + user.getEmail() + "");
+                        getActivity().setTitle("Hi.." + user.getEmail() + "");
+                        updateLogin(true);
+                        //getProfileDetails(user);
+                        retrieveSampleList();
+                    }
                 }
             }
         };
@@ -100,6 +116,11 @@ public class AuthFragment extends BaseFragment {
         });
     }
 
+    /**
+     * Getting the profile details from FB
+     *
+     * @param user
+     */
     private void getProfileDetails(FirebaseUser user) {
         mFireDatabaseInstance = FirebaseDatabase.getInstance();
         mDatabaseReference = mFireDatabaseInstance.getReference(user.getUid());
@@ -119,7 +140,8 @@ public class AuthFragment extends BaseFragment {
                 Toast.makeText(getActivity(), connectedUser.getProfile().getPhoneNumber(), Toast.LENGTH_SHORT).show();
 
                 Log.i("check", "onDataChange: ");
-                launchSampleList();
+                //launchSampleList();
+                //fillSampleList();
             }
 
             @Override
@@ -127,10 +149,33 @@ public class AuthFragment extends BaseFragment {
 
             }
         });
-
     }
 
-    private void launchSampleList() {
+    private void retrieveSampleList() {
+        mFireDatabaseInstance = FirebaseDatabase.getInstance();
+        mDatabaseReference = mFireDatabaseInstance.getReference("sampleList");
+
+        mDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+//                SampleModelList modelList = dataSnapshot.getValue(SampleModelList.class);
+//                showToast(modelList.getSampleModelArrayList().size() + "");
+                ArrayList<SampleModel> sampleModelList = new ArrayList<SampleModel>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    SampleModel model = snapshot.getValue(SampleModel.class);
+                    sampleModelList.add(model);
+                }
+                launchSampleList(sampleModelList);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                showToast("sample retrive failed");
+            }
+        });
+    }
+
+    private void launchSampleList(ArrayList<SampleModel> sampleModelArrayList) {
         SampleRecyclerAdapter adapter = new SampleRecyclerAdapter();
         adapter.setSampleModelList(sampleModelArrayList, recyclerItemClickListener);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
@@ -169,18 +214,29 @@ public class AuthFragment extends BaseFragment {
 
     @Override
     public void onDestroy() {
-        views = null;
+//        views = null;
         super.onDestroy();
     }
 
     private void signOut() {
         showToast("Bye");
+        updateLogin(false);
         auth.signOut();
+    }
+
+    private void updateLogin(boolean isLoggedIn) {
+        if (sharedPreferences == null) {
+            sharedPreferences = getActivity().getSharedPreferences("FBAccount", Context.MODE_PRIVATE);
+        }
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("loggedIn", isLoggedIn);
+        editor.apply();
     }
 
     private void showToast(String str) {
         Toast.makeText(getActivity(), str, Toast.LENGTH_SHORT).show();
     }
+
 
     recyclerItemClickListener recyclerItemClickListener = new recyclerItemClickListener() {
         @Override
@@ -188,6 +244,9 @@ public class AuthFragment extends BaseFragment {
             Toast.makeText(getContext(), model.getModelString(), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent();
             intent.setClass(getContext(), SampleDetailsActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("code", model.getModelString());
+            intent.putExtras(bundle);
             startActivity(intent);
         }
     };

@@ -17,4 +17,8 @@
     <string name="title_signup">SignUp</string>
     <string name="title_login">Login</string>
     <string name="title_logged">Hi</string>
+    <string name="scannerview">ScannerView</string>
+    <string name="available_str">Available</string>
+    <string name="history_str">History</string>
+    <string name="engage">engage</string>
 </resources>

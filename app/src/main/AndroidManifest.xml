@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.fbauth.checAuth">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -13,15 +15,26 @@
         <activity
             android:name=".AuthenticationActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".activities.SampleDetailsActivity"
+            android:parentActivityName=".AuthenticationActivity" />
+
+        <activity
+            android:name=".activities.ScannerActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            tools:replace="screenOrientation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
-            android:name=".activities.SampleDetailsActivity"
-            android:parentActivityName=".AuthenticationActivity"/>
+            android:name=".activities.ScannerDetailsActivity"
+            android:parentActivityName=".AuthenticationActivity" />
+
     </application>
 
 </manifest>

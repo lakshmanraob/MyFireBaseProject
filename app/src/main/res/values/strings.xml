@@ -21,4 +21,7 @@
     <string name="available_str">Available</string>
     <string name="history_str">History</string>
     <string name="engage">engage</string>
+    <string name="undefined">undefined</string>
+    <string name="not_registered">Not registered</string>
+    <string name="request_device">Request Device</string>
 </resources>

@@ -3,12 +3,13 @@ package com.fbauth.checAuth.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +22,6 @@ import com.fbauth.checAuth.R;
 import com.fbauth.checAuth.activities.SampleDetailsActivity;
 import com.fbauth.checAuth.adapters.SampleRecyclerAdapter;
 import com.fbauth.checAuth.models.SampleModel;
-import com.fbauth.checAuth.models.SampleModelList;
 import com.fbauth.checAuth.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,6 +32,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by labattula on 24/10/16.
@@ -158,10 +161,10 @@ public class AuthFragment extends BaseFragment {
         mDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-//                SampleModelList modelList = dataSnapshot.getValue(SampleModelList.class);
-//                showToast(modelList.getSampleModelArrayList().size() + "");
                 ArrayList<SampleModel> sampleModelList = new ArrayList<SampleModel>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Log.i("snapshot", "onDataChange: ");
+
                     SampleModel model = snapshot.getValue(SampleModel.class);
                     sampleModelList.add(model);
                 }
@@ -175,16 +178,44 @@ public class AuthFragment extends BaseFragment {
         });
     }
 
+
+
     private void launchSampleList(ArrayList<SampleModel> sampleModelArrayList) {
         SampleRecyclerAdapter adapter = new SampleRecyclerAdapter();
         adapter.setSampleModelList(sampleModelArrayList, recyclerItemClickListener);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-        views.sampleRecyclerView.setLayoutManager(mLayoutManager);
+//        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+//        views.sampleRecyclerView.setLayoutManager(mLayoutManager);
+
+        StaggeredGridLayoutManager staggeredGridLayoutManager =
+                new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        views.sampleRecyclerView.setLayoutManager(staggeredGridLayoutManager);
+
         views.sampleRecyclerView.setItemAnimator(new DefaultItemAnimator());
         views.sampleRecyclerView.setAdapter(adapter);
+        views.sampleRecyclerView.addItemDecoration(new SpaceItemDecor(16));
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         views.sampleRecyclerView.setHasFixedSize(true);
+    }
+
+    class SpaceItemDecor extends RecyclerView.ItemDecoration {
+        private final int space;
+
+        public SpaceItemDecor(int space) {
+            this.space = space;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            //super.getItemOffsets(outRect, view, parent, state);
+            outRect.left = space;
+            outRect.right = space;
+            outRect.bottom = space;
+
+            // Add top margin only for the first item to avoid double space between items
+            if (parent.getChildAdapterPosition(view) == 0)
+                outRect.top = space;
+        }
     }
 
     @Override

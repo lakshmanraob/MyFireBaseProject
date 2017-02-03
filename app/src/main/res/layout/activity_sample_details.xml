@@ -7,16 +7,81 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/detailsTxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="lakshman" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3">
 
-    <ImageView
-        android:id="@+id/barCode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:src="@mipmap/ic_launcher" />
+        <ImageView
+            android:id="@+id/details_img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/sea_shore" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/transparent_black"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <Button
+                android:id="@+id/request_device"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:visibility="gone"
+                android:layout_centerVertical="true"
+                tools:text="Request the device" />
+
+            <TextView
+                android:id="@+id/sdDetailsName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                tools:text="Sample" />
+
+            <TextView
+                android:id="@+id/sdDetailsDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/sdDetailsName"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                tools:text="Sample date" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/historyList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="7"
+        android:scrollbars="vertical" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="7"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/detailsTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="lakshman" />
+
+        <ImageView
+            android:id="@+id/barCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:src="@mipmap/ic_launcher" />
+    </LinearLayout>
 
 </LinearLayout>

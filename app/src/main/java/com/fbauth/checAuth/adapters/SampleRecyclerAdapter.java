@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fbauth.checAuth.R;
@@ -37,7 +38,27 @@ public class SampleRecyclerAdapter extends RecyclerView.Adapter<SampleRecyclerAd
     public void onBindViewHolder(sampleViewHolder holder, int position) {
         final SampleModel model = sampleModelList.get(position);
         holder.sampleTextView.setText(model.getModelString());
-        holder.sampleTextView.setOnClickListener(new View.OnClickListener() {
+
+        int cal = position % 5;
+        switch (cal) {
+            case 0:
+                holder.sampleImageView.setImageResource(R.drawable.sea);
+                break;
+            case 1:
+                holder.sampleImageView.setImageResource(R.drawable.sky);
+                break;
+            case 2:
+                holder.sampleImageView.setImageResource(R.drawable.phone);
+                break;
+            case 3:
+                holder.sampleImageView.setImageResource(R.drawable.sea_shore);
+                break;
+            case 4:
+                holder.sampleImageView.setImageResource(R.drawable.motel);
+                break;
+        }
+
+        holder.sampleImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 listener.clickModel(model);
@@ -53,12 +74,14 @@ public class SampleRecyclerAdapter extends RecyclerView.Adapter<SampleRecyclerAd
 
     class sampleViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView sampleTextView;
+        TextView sampleTextView;
+        ImageView sampleImageView;
 
-        public sampleViewHolder(View itemView) {
+        sampleViewHolder(View itemView) {
             super(itemView);
 
             sampleTextView = (TextView) itemView.findViewById(R.id.sampleTxt);
+            sampleImageView = (ImageView) itemView.findViewById(R.id.sampleImg);
         }
     }
 }

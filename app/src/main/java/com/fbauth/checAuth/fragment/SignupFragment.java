@@ -80,6 +80,7 @@ public class SignupFragment extends BaseFragment {
                 launchLogin();
             }
         });
+
     }
 
     @Override

@@ -10,17 +10,31 @@ import java.util.ArrayList;
  */
 
 public class SampleModel implements Parcelable {
+
+    public static final String SM_MODEL_STRING = "modelString";
+    public static final String SM_MODEL_IMAGE = "modelImage";
+    public static final String SM_MODEL_STATUS = "status";
+    public static final String SM_MODEL_HISTORY = "history";
+
+    public static final String SM_HT_USER = "user";
+    public static final String SM_HT_START_TIME = "starttime";
+    public static final String SM_HT_END_TIME = "endtime";
+
     private String modelString;
     private String modelImage;
     private String modelDate;
     private String modelState;
 
-    private ArrayList<SampleModelHistory> modelHistory;
+    private ArrayList<SampleModelHistory> history;
 
     enum state {
         AVAILABLE,
         BLOCKED,
         ENAGAGED
+    }
+
+    public SampleModel() {
+
     }
 
     public SampleModel(String mString, String mImage, String mDate, String mState) {
@@ -95,11 +109,11 @@ public class SampleModel implements Parcelable {
     }
 
     public ArrayList<SampleModelHistory> getModelHistory() {
-        return modelHistory;
+        return history;
     }
 
     public void setModelHistory(ArrayList<SampleModelHistory> modelHistory) {
-        this.modelHistory = modelHistory;
+        this.history = modelHistory;
     }
 
     public static class Builder {

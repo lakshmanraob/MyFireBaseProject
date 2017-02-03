@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/scanBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/scannerview" />
+
+    <LinearLayout
+        android:id="@+id/sanDetailsContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/scanSampleImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/scanSampleName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="sample Name" />
+
+        <TextView
+            android:id="@+id/scanSamplDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="sample date" />
+
+        <LinearLayout
+            android:id="@+id/scanSampleStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/available_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                tools:text="@string/available_str" />
+
+            <Button
+                android:id="@+id/engage_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                tools:text="@string/engage" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -9,9 +9,16 @@ import android.widget.TextView;
 
 import com.fbauth.checAuth.R;
 import com.fbauth.checAuth.models.DeviceUsageHistory;
+import com.fbauth.checAuth.models.Profile;
 import com.fbauth.checAuth.utils.UtilsDate;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by labattula on 03/02/17.
@@ -48,10 +55,24 @@ public class SDetailsHistoryAdapter extends RecyclerView.Adapter<SDetailsHistory
         return historyArrayList.size();
     }
 
-    private void bindView(SDViewHolder holder, DeviceUsageHistory history) {
+    private void bindView(final SDViewHolder holder, final DeviceUsageHistory history) {
         if (history != null) {
             if (history.getProfileId() != null) {
-                holder.userView.setText(history.getProfileId());
+                //holder.userView.setText(history.getProfileId());
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference(history.getProfileId());
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        HashMap<String, Object> profileMap = (HashMap<String, Object>) dataSnapshot.getValue();
+                        Profile profile = new Profile((HashMap<String, String>) profileMap.get("profile"));
+                        holder.userView.setText(profile.getUserName());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
             if (history.getStartTime() != null) {
                 String startDate = UtilsDate.getDate(history.getStartTime());

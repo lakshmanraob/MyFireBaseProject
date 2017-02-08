@@ -21,7 +21,7 @@ import android.widget.Toast;
 import com.fbauth.checAuth.R;
 import com.fbauth.checAuth.activities.SampleDetailsActivity;
 import com.fbauth.checAuth.adapters.SampleRecyclerAdapter;
-import com.fbauth.checAuth.models.SampleModel;
+import com.fbauth.checAuth.models.DeviceModel;
 import com.fbauth.checAuth.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,9 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by labattula on 24/10/16.
@@ -50,30 +48,31 @@ public class AuthFragment extends BaseFragment {
     private FirebaseDatabase mFireDatabaseInstance;
     private DatabaseReference mDatabaseReference;
 
-    ArrayList<SampleModel> sampleModelArrayList = null;
+    ArrayList<DeviceModel> deviceModelArrayList = null;
 
     SharedPreferences sharedPreferences = null;
 
     public AuthFragment() {
-        //fillSampleList();
+        //fillDeviceList();
     }
 
-//    /**
-//     * Enable only when we required data in the FB database
-//     */
-//    private void fillSampleList() {
-//        mFireDatabaseInstance = FirebaseDatabase.getInstance();
-//        mDatabaseReference = mFireDatabaseInstance.getReference("sampleList");
-//        sampleModelArrayList = new ArrayList<>();
-//        for (int i = 0; i < 10; i++) {
-//            SampleModel model = new SampleModel();
-//            model.setModelString("FB sampleMode.." + i);
-//            model.setModelImage("FB sampleModeImage.." + i);
-//            sampleModelArrayList.add(model);
-//        }
-//        mDatabaseReference.setValue(sampleModelArrayList);
-//
-//    }
+    /**
+     * Enable only when we required data in the FB database
+     */
+    private void fillDeviceList() {
+        mFireDatabaseInstance = FirebaseDatabase.getInstance();
+        mDatabaseReference = mFireDatabaseInstance.getReference("devices");
+        deviceModelArrayList = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            DeviceModel model = new DeviceModel();
+            model.setModelString("Device" + i);
+            model.setModelState("available");
+            model.setModelImage("/sample/image-" + i);
+            deviceModelArrayList.add(model);
+            mDatabaseReference.child(model.getModelString()).setValue(model);
+        }
+        //mDatabaseReference.setValue(deviceModelArrayList);
+    }
 
     public static AuthFragment getInstance() {
         return new AuthFragment();
@@ -156,19 +155,19 @@ public class AuthFragment extends BaseFragment {
 
     private void retrieveSampleList() {
         mFireDatabaseInstance = FirebaseDatabase.getInstance();
-        mDatabaseReference = mFireDatabaseInstance.getReference("sampleList");
+        mDatabaseReference = mFireDatabaseInstance.getReference("devices");
 
         mDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<SampleModel> sampleModelList = new ArrayList<SampleModel>();
+                ArrayList<DeviceModel> deviceModelList = new ArrayList<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Log.i("snapshot", "onDataChange: ");
 
-                    SampleModel model = snapshot.getValue(SampleModel.class);
-                    sampleModelList.add(model);
+                    DeviceModel model = snapshot.getValue(DeviceModel.class);
+                    deviceModelList.add(model);
                 }
-                launchSampleList(sampleModelList);
+                launchSampleList(deviceModelList);
             }
 
             @Override
@@ -179,10 +178,9 @@ public class AuthFragment extends BaseFragment {
     }
 
 
-
-    private void launchSampleList(ArrayList<SampleModel> sampleModelArrayList) {
+    private void launchSampleList(ArrayList<DeviceModel> deviceModelArrayList) {
         SampleRecyclerAdapter adapter = new SampleRecyclerAdapter();
-        adapter.setSampleModelList(sampleModelArrayList, recyclerItemClickListener);
+        adapter.setSampleModelList(deviceModelArrayList, recyclerItemClickListener);
 //        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
 //        views.sampleRecyclerView.setLayoutManager(mLayoutManager);
 
@@ -271,12 +269,13 @@ public class AuthFragment extends BaseFragment {
 
     recyclerItemClickListener recyclerItemClickListener = new recyclerItemClickListener() {
         @Override
-        public void clickModel(SampleModel model) {
+        public void clickModel(DeviceModel model) {
             Toast.makeText(getContext(), model.getModelString(), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent();
             intent.setClass(getContext(), SampleDetailsActivity.class);
             Bundle bundle = new Bundle();
             bundle.putString("code", model.getModelString());
+            bundle.putParcelable(DeviceModel.SELECTED_DEVICE, model);
             intent.putExtras(bundle);
             startActivity(intent);
         }
@@ -295,6 +294,6 @@ public class AuthFragment extends BaseFragment {
     }
 
     public interface recyclerItemClickListener {
-        public void clickModel(SampleModel model);
+        public void clickModel(DeviceModel model);
     }
 }

@@ -12,7 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fbauth.checAuth.R;
-import com.fbauth.checAuth.models.SampleModel;
+import com.fbauth.checAuth.models.DeviceModel;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -72,7 +72,7 @@ public class ScannerActivity extends AppCompatActivity {
             } else {
                 Log.d("MainActivity", "Scanned");
                 Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
-                SampleModel model = getSampleModel(result.getContents());
+                DeviceModel model = getSampleModel(result.getContents());
                 if (model != null) {
                     bindView(model);
                 }
@@ -91,12 +91,12 @@ public class ScannerActivity extends AppCompatActivity {
     }
 
 
-    private SampleModel getSampleModel(String str) {
+    private DeviceModel getSampleModel(String str) {
         if (str == null)
             return null;
         else {
             String[] sampleList = str.split("_");
-            SampleModel model = new SampleModel(sampleList[NAME], sampleList[IMAGE], sampleList[DATE], sampleList[STATE]);
+            DeviceModel model = new DeviceModel(sampleList[NAME], sampleList[IMAGE], sampleList[DATE], sampleList[STATE]);
             return model;
         }
     }
@@ -106,7 +106,7 @@ public class ScannerActivity extends AppCompatActivity {
      *
      * @param model
      */
-    private void bindView(SampleModel model) {
+    private void bindView(DeviceModel model) {
         scannerBtn.setVisibility(View.GONE);
         sanDetailsContent.setVisibility(View.VISIBLE);
         sampleImg.setImageResource(R.mipmap.ic_launcher);

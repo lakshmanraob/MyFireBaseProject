@@ -20,7 +20,6 @@ import com.fbauth.checAuth.AuthenticationActivity;
 import com.fbauth.checAuth.R;
 import com.fbauth.checAuth.models.Profile;
 import com.fbauth.checAuth.models.User;
-import com.fbauth.checAuth.utils.Constants;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;

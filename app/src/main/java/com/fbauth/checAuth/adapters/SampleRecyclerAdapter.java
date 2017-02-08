@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.fbauth.checAuth.R;
 import com.fbauth.checAuth.fragment.AuthFragment;
-import com.fbauth.checAuth.models.SampleModel;
+import com.fbauth.checAuth.models.DeviceModel;
 
 import java.util.List;
 
@@ -19,12 +19,12 @@ import java.util.List;
 
 public class SampleRecyclerAdapter extends RecyclerView.Adapter<SampleRecyclerAdapter.sampleViewHolder> {
 
-    private List<SampleModel> sampleModelList;
+    private List<DeviceModel> deviceModelList;
 
     private AuthFragment.recyclerItemClickListener listener;
 
-    public void setSampleModelList(List<SampleModel> modelList, AuthFragment.recyclerItemClickListener listener) {
-        this.sampleModelList = modelList;
+    public void setSampleModelList(List<DeviceModel> modelList, AuthFragment.recyclerItemClickListener listener) {
+        this.deviceModelList = modelList;
         this.listener = listener;
     }
 
@@ -36,7 +36,7 @@ public class SampleRecyclerAdapter extends RecyclerView.Adapter<SampleRecyclerAd
 
     @Override
     public void onBindViewHolder(sampleViewHolder holder, int position) {
-        final SampleModel model = sampleModelList.get(position);
+        final DeviceModel model = deviceModelList.get(position);
         holder.sampleTextView.setText(model.getModelString());
 
         int cal = position % 5;
@@ -68,7 +68,7 @@ public class SampleRecyclerAdapter extends RecyclerView.Adapter<SampleRecyclerAd
 
     @Override
     public int getItemCount() {
-        return sampleModelList.size();
+        return deviceModelList.size();
     }
 
 

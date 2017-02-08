@@ -8,7 +8,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.fbauth.checAuth.R;
-import com.fbauth.checAuth.models.SampleModel;
+import com.fbauth.checAuth.models.DeviceModel;
 
 /**
  * Created by labattula on 24/01/17.
@@ -20,7 +20,7 @@ public class ScannerDetailsActivity extends AppCompatActivity {
     Button historyBtn;
     TextView detailsModelName;
 
-    SampleModel launchedModel;
+    DeviceModel launchedModel;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

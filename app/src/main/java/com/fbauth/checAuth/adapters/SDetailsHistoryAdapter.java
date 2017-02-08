@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fbauth.checAuth.R;
-import com.fbauth.checAuth.models.SampleModelHistory;
+import com.fbauth.checAuth.models.DeviceUsageHistory;
 
 import java.util.ArrayList;
 
@@ -18,13 +18,13 @@ import java.util.ArrayList;
 
 public class SDetailsHistoryAdapter extends RecyclerView.Adapter<SDetailsHistoryAdapter.SDViewHolder> {
 
-    ArrayList<SampleModelHistory> historyArrayList = new ArrayList<>();
+    ArrayList<DeviceUsageHistory> historyArrayList = new ArrayList<>();
 
     public SDetailsHistoryAdapter() {
 
     }
 
-    public void setHistoryArrayList(ArrayList<SampleModelHistory> list) {
+    public void setHistoryArrayList(ArrayList<DeviceUsageHistory> list) {
         this.historyArrayList = list;
     }
 
@@ -37,7 +37,7 @@ public class SDetailsHistoryAdapter extends RecyclerView.Adapter<SDetailsHistory
     @Override
     public void onBindViewHolder(SDViewHolder holder, int position) {
         if (historyArrayList != null && historyArrayList.size() > 0) {
-            SampleModelHistory history = historyArrayList.get(position);
+            DeviceUsageHistory history = historyArrayList.get(position);
             bindView(holder, history);
         }
     }
@@ -47,16 +47,16 @@ public class SDetailsHistoryAdapter extends RecyclerView.Adapter<SDetailsHistory
         return historyArrayList.size();
     }
 
-    private void bindView(SDViewHolder holder, SampleModelHistory history) {
+    private void bindView(SDViewHolder holder, DeviceUsageHistory history) {
         if (history != null) {
-            if (history.getUser() != null) {
-                holder.userView.setText(history.getUser());
+            if (history.getProfileId() != null) {
+                holder.userView.setText(history.getProfileId());
             }
-            if (history.getStarttime() != null) {
-                holder.startView.setText(history.getStarttime());
+            if (history.getStartTime() != null) {
+                holder.startView.setText(history.getStartTime());
             }
-            if (history.getEndtime() != null) {
-                holder.endView.setText(history.getEndtime());
+            if (history.getEndTime() != null) {
+                holder.endView.setText(history.getEndTime());
             }
         }
     }

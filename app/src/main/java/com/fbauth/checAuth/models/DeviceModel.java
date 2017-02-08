@@ -3,29 +3,27 @@ package com.fbauth.checAuth.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
-
 /**
  * Created by labattula on 19/01/17.
  */
 
-public class SampleModel implements Parcelable {
+public class DeviceModel implements Parcelable {
 
     public static final String SM_MODEL_STRING = "modelString";
     public static final String SM_MODEL_IMAGE = "modelImage";
-    public static final String SM_MODEL_STATUS = "status";
+    public static final String SM_MODEL_STATUS = "modelState";
     public static final String SM_MODEL_HISTORY = "history";
 
     public static final String SM_HT_USER = "user";
     public static final String SM_HT_START_TIME = "starttime";
     public static final String SM_HT_END_TIME = "endtime";
 
+    public static final String SELECTED_DEVICE = "selectedDevice";
+
     private String modelString;
     private String modelImage;
     private String modelDate;
     private String modelState;
-
-    private ArrayList<SampleModelHistory> history;
 
     enum state {
         AVAILABLE,
@@ -33,18 +31,18 @@ public class SampleModel implements Parcelable {
         ENAGAGED
     }
 
-    public SampleModel() {
+    public DeviceModel() {
 
     }
 
-    public SampleModel(String mString, String mImage, String mDate, String mState) {
+    public DeviceModel(String mString, String mImage, String mDate, String mState) {
         this.modelString = mString;
         this.modelImage = mImage;
         this.modelDate = mDate;
         this.modelState = mState;
     }
 
-    protected SampleModel(Parcel in) {
+    protected DeviceModel(Parcel in) {
         modelString = in.readString();
         modelImage = in.readString();
         modelDate = in.readString();
@@ -64,15 +62,15 @@ public class SampleModel implements Parcelable {
         return 0;
     }
 
-    public static final Creator<SampleModel> CREATOR = new Creator<SampleModel>() {
+    public static final Creator<DeviceModel> CREATOR = new Creator<DeviceModel>() {
         @Override
-        public SampleModel createFromParcel(Parcel in) {
-            return new SampleModel(in);
+        public DeviceModel createFromParcel(Parcel in) {
+            return new DeviceModel(in);
         }
 
         @Override
-        public SampleModel[] newArray(int size) {
-            return new SampleModel[size];
+        public DeviceModel[] newArray(int size) {
+            return new DeviceModel[size];
         }
     };
 
@@ -108,14 +106,6 @@ public class SampleModel implements Parcelable {
         this.modelState = modelState;
     }
 
-    public ArrayList<SampleModelHistory> getModelHistory() {
-        return history;
-    }
-
-    public void setModelHistory(ArrayList<SampleModelHistory> modelHistory) {
-        this.history = modelHistory;
-    }
-
     public static class Builder {
         private String modelString;
         private String modelImage;
@@ -142,8 +132,8 @@ public class SampleModel implements Parcelable {
             return this;
         }
 
-        public SampleModel build() {
-            return new SampleModel(modelString, modelImage, modelDate, modelState);
+        public DeviceModel build() {
+            return new DeviceModel(modelString, modelImage, modelDate, modelState);
         }
     }
 }

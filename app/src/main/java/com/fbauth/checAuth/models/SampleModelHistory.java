@@ -3,31 +3,31 @@ package com.fbauth.checAuth.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+
 /**
  * Created by labattula on 20/01/17.
  */
 
 public class SampleModelHistory implements Parcelable {
 
-    String user;
-    String starttime;
-    String endtime;
+
+    String deviceName;
+    ArrayList<DeviceUsageHistory> deviceUsageHistory;
 
     public SampleModelHistory() {
 
     }
 
     protected SampleModelHistory(Parcel in) {
-        user = in.readString();
-        starttime = in.readString();
-        endtime = in.readString();
+        deviceName = in.readString();
+        deviceUsageHistory = in.readParcelable(DeviceUsageHistory.class.getClassLoader());
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(user);
-        dest.writeString(starttime);
-        dest.writeString(endtime);
+        dest.writeString(deviceName);
+        dest.writeList(deviceUsageHistory);
     }
 
     @Override
@@ -47,27 +47,19 @@ public class SampleModelHistory implements Parcelable {
         }
     };
 
-    public String getStarttime() {
-        return starttime;
+    public String getDeviceName() {
+        return deviceName;
     }
 
-    public void setStarttime(String starttime) {
-        this.starttime = starttime;
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
     }
 
-    public String getUser() {
-        return user;
+    public ArrayList<DeviceUsageHistory> getDeviceUsageHistory() {
+        return deviceUsageHistory;
     }
 
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    public String getEndtime() {
-        return endtime;
-    }
-
-    public void setEndtime(String endtime) {
-        this.endtime = endtime;
+    public void setDeviceUsageHistory(ArrayList<DeviceUsageHistory> deviceUsageHistory) {
+        this.deviceUsageHistory = deviceUsageHistory;
     }
 }

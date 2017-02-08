@@ -24,4 +24,9 @@
     <string name="undefined">undefined</string>
     <string name="not_registered">Not registered</string>
     <string name="request_device">Request Device</string>
+    <string name="return_device">Return Device</string>
+
+
+    <string name="no_history">No History available right now</string>
+
 </resources>

@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.fbauth.checAuth.R;
 import com.fbauth.checAuth.models.DeviceUsageHistory;
+import com.fbauth.checAuth.utils.UtilsDate;
 
 import java.util.ArrayList;
 
@@ -53,10 +54,12 @@ public class SDetailsHistoryAdapter extends RecyclerView.Adapter<SDetailsHistory
                 holder.userView.setText(history.getProfileId());
             }
             if (history.getStartTime() != null) {
-                holder.startView.setText(history.getStartTime());
+                String startDate = UtilsDate.getDate(history.getStartTime());
+                holder.startView.setText(startDate);
             }
             if (history.getEndTime() != null) {
-                holder.endView.setText(history.getEndTime());
+                String endDate = UtilsDate.getDate(history.getEndTime());
+                holder.endView.setText(endDate);
             }
         }
     }

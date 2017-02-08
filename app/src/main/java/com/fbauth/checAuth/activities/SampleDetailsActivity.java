@@ -1,12 +1,13 @@
 package com.fbauth.checAuth.activities;
 
 import android.os.Bundle;
-import android.os.CancellationSignal;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fbauth.checAuth.R;
+import com.fbauth.checAuth.adapters.SDetailsHistoryAdapter;
+import com.fbauth.checAuth.fragment.AuthFragment;
 import com.fbauth.checAuth.models.DeviceModel;
 import com.fbauth.checAuth.models.DeviceUsageHistory;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,6 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 
 /**
@@ -86,13 +90,15 @@ public class SampleDetailsActivity extends AppCompatActivity {
         if (extras != null) {
             selecteddeviceModel = extras.getParcelable(DeviceModel.SELECTED_DEVICE);
             if (selecteddeviceModel != null) {
-                bindData(selecteddeviceModel, currentUserProfileId);
+                //bindData(selecteddeviceModel, null, currentUserProfileId);
+                String ref = "devices/" + selecteddeviceModel.getModelString();
+                updateHistory(mFireDatabaseInstance.getReference(ref), false);
             }
         }
 
     }
 
-    private void bindData(final DeviceModel model, String userProfileId) {
+    private void bindData(final DeviceModel model, ArrayList<DeviceUsageHistory> history, String userProfileId) {
         if (model != null) {
             if (model.getModelString() != null) {
                 modelDetailsName.setText(model.getModelString());
@@ -127,9 +133,27 @@ public class SampleDetailsActivity extends AppCompatActivity {
             } else {
                 requestDeviceBtn.setVisibility(View.GONE);
             }
+            if (history == null) {
+                historyList.setVisibility(View.GONE);
+                noHistory.setVisibility(View.VISIBLE);
+            } else {
+                noHistory.setVisibility(View.GONE);
+                historyList.setVisibility(View.VISIBLE);
 
-            historyList.setVisibility(View.GONE);
-            noHistory.setVisibility(View.VISIBLE);
+                Collections.sort(history);
+
+                SDetailsHistoryAdapter adapter = new SDetailsHistoryAdapter();
+                adapter.setHistoryArrayList(history);
+
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+                historyList.setLayoutManager(linearLayoutManager);
+
+                historyList.setItemAnimator(new DefaultItemAnimator());
+                historyList.setAdapter(adapter);
+                // use this setting to improve performance if you know that changes
+                // in content do not change the layout size of the RecyclerView
+                historyList.setHasFixedSize(true);
+            }
         }
     }
 
@@ -166,12 +190,12 @@ public class SampleDetailsActivity extends AppCompatActivity {
         @Override
         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
             Toast.makeText(SampleDetailsActivity.this, "update completed", Toast.LENGTH_SHORT).show();
-            updateHistory(databaseReference);
+            updateHistory(databaseReference, true);
         }
     };
 
-    private void updateHistory(final DatabaseReference reference) {
-        DatabaseReference updateDBreference = reference.getDatabase().getReference("history");
+    private void updateHistory(final DatabaseReference reference, final boolean updateNeeded) {
+        final DatabaseReference updateDBreference = reference.getDatabase().getReference("history");
         //reference.child(reference.getKey());
 
         final ArrayList<DeviceUsageHistory> history = new ArrayList<>();
@@ -185,9 +209,11 @@ public class SampleDetailsActivity extends AppCompatActivity {
                 if (dataSnapshot.getValue() != null) {
                     //This is for updating the device taken
                     ArrayList<DeviceUsageHistory> updatedHistory
-                            = updateDeviceHistory(dataSnapshot, reference.getKey());
-                    childQuery.getRef().child(reference.getKey()).setValue(updatedHistory);
-                    bindData(selecteddeviceModel, currentUserProfileId);
+                            = updateDeviceHistory(dataSnapshot, reference.getKey(), updateNeeded);
+                    if (updateNeeded) {
+                        childQuery.getRef().child(reference.getKey()).setValue(updatedHistory);
+                    }
+                    bindData(selecteddeviceModel, updatedHistory, currentUserProfileId);
                 } else {
                     DeviceUsageHistory deviceUsageHistory = new DeviceUsageHistory();
                     deviceUsageHistory.setProfileId(currentUserProfileId);
@@ -200,7 +226,7 @@ public class SampleDetailsActivity extends AppCompatActivity {
                     }
                     history.add(deviceUsageHistory);
                     childQuery.getRef().child(reference.getKey()).setValue(history);
-                    bindData(selecteddeviceModel, deviceUsageHistory.getProfileId());
+                    bindData(selecteddeviceModel, history, deviceUsageHistory.getProfileId());
                 }
             }
 
@@ -270,20 +296,24 @@ public class SampleDetailsActivity extends AppCompatActivity {
      * @param dataSnapshot
      * @param deviceName
      */
-    private ArrayList<DeviceUsageHistory> updateDeviceHistory(DataSnapshot dataSnapshot, String deviceName) {
+    private ArrayList<DeviceUsageHistory> updateDeviceHistory(DataSnapshot dataSnapshot,
+                                                              String deviceName,
+                                                              boolean updateNeeded) {
         ArrayList<DeviceUsageHistory> deviceUsageHistory = getDeviceUsageHistory(dataSnapshot, deviceName);
-        DeviceUsageHistory updateHistory = getCurrentUsage(deviceUsageHistory);
-        if (updateHistory == null) {
-            updateHistory = new DeviceUsageHistory();
-            updateHistory.setProfileId(currentUserProfileId);
-            updateHistory.setStartTime(Calendar.getInstance().getTimeInMillis() + "");
-            selecteddeviceModel.setModelState(getString(R.string.engage));
-            deviceUsageHistory.add(updateHistory);
-        } else {
-            deviceUsageHistory.remove(updateHistory);
-            updateHistory.setEndTime(Calendar.getInstance().getTimeInMillis() + "");
-            selecteddeviceModel.setModelState(getString(R.string.available_str));
-            deviceUsageHistory.add(updateHistory);
+        if (updateNeeded) {
+            DeviceUsageHistory updateHistory = getCurrentUsage(deviceUsageHistory);
+            if (updateHistory == null) {
+                updateHistory = new DeviceUsageHistory();
+                updateHistory.setProfileId(currentUserProfileId);
+                updateHistory.setStartTime(Calendar.getInstance().getTimeInMillis() + "");
+                selecteddeviceModel.setModelState(getString(R.string.engage));
+                deviceUsageHistory.add(updateHistory);
+            } else {
+                deviceUsageHistory.remove(updateHistory);
+                updateHistory.setEndTime(Calendar.getInstance().getTimeInMillis() + "");
+                selecteddeviceModel.setModelState(getString(R.string.available_str));
+                deviceUsageHistory.add(updateHistory);
+            }
         }
         return deviceUsageHistory;
     }

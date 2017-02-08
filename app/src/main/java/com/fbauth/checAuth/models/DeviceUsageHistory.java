@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by labattula on 06/02/17.
  */
 
-public class DeviceUsageHistory implements Parcelable {
+public class DeviceUsageHistory implements Parcelable, Comparable<DeviceUsageHistory> {
 
     public static String PROFILE_ID = "profileId";
     public static String START_TIME = "startTime";
@@ -76,4 +76,19 @@ public class DeviceUsageHistory implements Parcelable {
     }
 
 
+    @Override
+    public int compareTo(DeviceUsageHistory comparedTo) {
+        if (getLong(getStartTime()) > getLong(comparedTo.getStartTime())) {
+            return -1;
+        } else if (getLong(getStartTime()) < getLong(comparedTo.getStartTime())) {
+            return 1;
+        }
+        return 0;
+    }
+
+    private long getLong(String str) {
+        long longDate = Long.parseLong(str);
+        //Date date = new Date(longDate);
+        return longDate;
+    }
 }

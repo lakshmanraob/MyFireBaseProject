@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -17,7 +16,6 @@ import android.widget.Toast;
 
 import com.fbauth.checAuth.R;
 import com.fbauth.checAuth.adapters.SDetailsHistoryAdapter;
-import com.fbauth.checAuth.fragment.AuthFragment;
 import com.fbauth.checAuth.models.DeviceModel;
 import com.fbauth.checAuth.models.DeviceUsageHistory;
 import com.google.firebase.auth.FirebaseAuth;

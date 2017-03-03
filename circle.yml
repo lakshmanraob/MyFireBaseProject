@@ -15,6 +15,11 @@ dependencies:
         - echo y | android update sdk --no-ui --all --filter tools,platform-tools,build-tools-25.2.5,android-25,extra-google-m2repository,extra-google-google_play_services,extra-android-support
         - ANDROID_HOME=/usr/local/android-sdk-linux ./gradlew dependencies
 
+notify:
+    webhooks:
+        # A list of hook hashes, containing the URL field
+        - url: https://limitless-eyrie-90733.herokuapp.com/cipostaccept
+
 test:
     override:
         - (./gradlew assemble):

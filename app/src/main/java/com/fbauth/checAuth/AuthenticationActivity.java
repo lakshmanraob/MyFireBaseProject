@@ -36,7 +36,6 @@ public class AuthenticationActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
         signUpPage();
     }
 

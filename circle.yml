@@ -18,7 +18,7 @@ dependencies:
 notify:
     webhooks:
         # A list of hook hashes, containing the URL field
-        - url: https://limitless-eyrie-90733.herokuapp.com/cipostaccept
+        - url: https://limitless-eyrie-90733.herokuapp.com/buildhook
 
 test:
     override:
